@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
 
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -9,19 +10,16 @@ import Data.Maybe (fromMaybe)
 type Op = Int -> Int -> Int
 
 charToOp :: Char -> (Int -> Int -> Int)
-charToOp '+' = (+)
-charToOp '*' = (*)
+charToOp = \case '+' -> (+); '*' -> (*)
 
 chomper :: [(Op, [Int])] -> [[Char]] -> [(Op, [Int])]
-chomper chomped feed =
-    let opIndex = fromMaybe 0 . findIndex (/= ' ') $ last feed
-    in case opIndex of
-        0 -> chomped
-        _ ->
-            chomper ((op, nums) : chomped) $ map (drop (opIndex + 1)) feed
-            where
-                op = charToOp $ last feed !! opIndex
-                nums = map (read . reverse . take (opIndex + 1)) $ init feed
+chomper chomped feed
+    | opIndex == 0 = chomped
+    | otherwise = chomper ((op, nums) : chomped) $ map (drop (opIndex + 1)) feed
+    where
+        opIndex = fromMaybe 0 . findIndex (/= ' ') $ last feed
+        op = charToOp $ last feed !! opIndex
+        nums = map (read . reverse . take (opIndex + 1)) $ init feed
 
 solvePart1 :: T.Text -> Int
 solvePart1 txt =
