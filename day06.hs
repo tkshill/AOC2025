@@ -20,9 +20,8 @@ chomper nParser chomped feed
     | otherwise = chomper nParser ((op, nums) : chomped) $ map (drop (opIndex + 1)) feed
     where
         opIndex = fromMaybe 0 . findIndex (/= ' ') $ last feed
-        op = charToOp $ last feed !! opIndex
+        op = (\case '+' -> (+); '*' -> (*)) $ last feed !! opIndex
         nums = nParser opIndex $ init feed
-        charToOp = \case '+' -> (+); '*' -> (*)
 
 solve :: NumParser -> T.Text -> Int
 solve nParser txt =
