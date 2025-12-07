@@ -30,20 +30,12 @@ solvePart1 txt =
 solvePart2 :: T.Text -> Int
 solvePart2 _ = 0
 
-printResults :: Int -> Int -> IO ()
-printResults p1 p2 = do
-  putStrLn ("Part 1: " <> show p1)
-  putStrLn ("Part 2: " <> show p2)
-
-readInput :: [String] -> IO T.Text
-readInput [path] = TIO.readFile path
-
 main :: IO ()
 main = do
     args <- getArgs
-    raw <- readInput args
+    raw <- TIO.readFile $ head args
 
-    let p1 = solvePart1 raw
-        p2 = solvePart2 raw
+    let printResults p1 p2 = do
+          putStrLn $ "Part 1: " <> show p1 <> "\nPart 2: " <> show p2
 
-    printResults p1 p2
+    printResults (solvePart1 raw) (solvePart2 raw)
